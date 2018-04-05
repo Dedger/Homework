@@ -1,0 +1,235 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp52
+{
+
+    interface IRand
+    {
+        void RandFor(int a, int b, int c);
+    }
+
+    public class Diligent
+    {
+        Program program1 = new Program();
+
+        public int[] array = new int[1000];
+
+        public void For(int massiv, int a)
+        {
+            array[massiv] = a;
+
+            massiv++;
+        }
+    }
+
+    public class Simple : IRand
+    {
+        Random rand = new Random();
+
+        public int[] array = new int[1000];
+
+        public void RandFor(int min, int max, int massiv)
+        {
+            int num;
+            num = rand.Next(min, max + 1);
+            array[massiv] = num;
+        }
+    }
+
+    public class Smart : IRand
+    {
+        Random rand = new Random();
+
+        public int[] array = new int[1000];
+
+        public void RandFor(int min, int max, int massiv)
+        {
+            int num;
+            int a1 = 0;
+            while (a1 == 0)
+            {
+                num = rand.Next(min, max + 1);
+                for (int a = 0; a <= massiv; a++)
+                {
+                    if (num == array[a])
+                    { break; }
+                    else if (a == massiv)
+                    {
+                        array[massiv] = num;
+                        a1 = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    public class Cheat_Diligent
+    {
+        public int[] array = new int[1000];
+
+        public void For(int massiv, int a)
+        {
+            
+            array[massiv] = a;
+            
+            massiv++;
+        }
+    }
+    public class Cheat_Simple : IRand
+    {
+        Random rand = new Random();
+
+        public int[] array = new int[1000];
+
+        public void RandFor(int min, int max, int massiv)
+        {
+            int num;
+            num = rand.Next(min, max + 1);
+            array[massiv] = num;
+        }
+    }
+
+    class Program
+    {
+        public string[] Arr = new string[5000];
+        public int[] Arr1 = new int[5000];
+        static void Main(string[] args)
+        {
+
+
+            int hod = 1;
+            int massiv = 0;
+
+            Console.Write("Введите минимальное число:");
+            int minValue = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Введите максимальное число число:");
+            int maxValue = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Введите выигрышное число:");
+            int guessValue = Convert.ToInt32(Console.ReadLine());
+
+            Program program1 = new Program();
+            Diligent diligent1 = new Diligent();
+            Simple simple1 = new Simple();
+            Smart smart1 = new Smart();
+            Cheat_Diligent c_Diligent1 = new Cheat_Diligent();
+            Cheat_Simple c_Simple1 = new Cheat_Simple();
+            Program program12 = new Program();
+
+            for (int a = minValue; a <= maxValue; a++)//Готово для усердного
+            {
+                diligent1.For(massiv, a);
+
+                for (int num = 0; num < 5000; num++)
+                {
+                    if (program12.Arr[num] == null)
+                    {
+                        program12.Arr[num] = Convert.ToString(diligent1.array[massiv]);
+                        break;
+                    }
+                }
+
+                simple1.RandFor(minValue, maxValue, massiv);
+
+                for (int num = 0; num < 5000; num++)
+                {
+                    if (program12.Arr[num] == null)
+                    {
+                        program12.Arr[num] = Convert.ToString(simple1.array[massiv]);
+                        break;
+                    }
+                }
+
+                smart1.RandFor(minValue, maxValue, massiv);
+
+                for (int num = 0; num < 5000; num++)
+                {
+                    if (program12.Arr[num] == null)
+                    {
+                        program12.Arr[num] = Convert.ToString(smart1.array[massiv]);
+                        break;
+                    }
+                }
+
+                c_Diligent1.For(massiv, a);
+
+                for (int num = 0; num < 5000; num++)
+                {
+                    if (program12.Arr[num] != null)
+                    {
+                        program12.Arr1[num] = Convert.ToInt32(program12.Arr[num]);
+                        if (program12.Arr1[num] == c_Diligent1.array[massiv])
+                        {
+                            c_Diligent1.array[massiv]++;
+                        }
+                    }
+                    else { break; }
+                }
+
+                for (int num = 0; num < 5000; num++)
+                {
+                    if (program12.Arr[num] == null)
+                    {
+                        program12.Arr[num] = Convert.ToString(c_Diligent1.array[massiv]);
+                        break;
+                    }
+                }
+
+                c_Simple1.RandFor(minValue, maxValue, massiv);
+
+                for (int num = 0; num < 5000; num++)
+                {
+                    program12.Arr1[num] = Convert.ToInt32(program12.Arr[num]);
+                    
+                    if (program12.Arr1[num] == c_Simple1.array[massiv])
+                    {
+                        c_Simple1.RandFor(minValue, maxValue, massiv);
+                    }
+                }
+
+                for (int num = 0; num < 5000; num++)
+                {
+                    if (program12.Arr[num] == null)
+                    {
+                        program12.Arr[num] = Convert.ToString(c_Diligent1.array[massiv]);
+                        break;
+                    }
+                }
+
+                //Console.WriteLine(diligent1.array[massiv]);
+                Console.WriteLine("Ус.ч: "+c_Diligent1.array[massiv]);
+                Console.WriteLine("Усердный: " + diligent1.array[massiv]);
+                Console.WriteLine("Простой: " + simple1.array[massiv]);
+                Console.WriteLine("Умный: " + smart1.array[massiv]);
+
+                program12.Arr1[massiv] = Convert.ToInt32(program12.Arr[massiv]);
+                if (diligent1.array[massiv] == guessValue)
+                {
+                    Console.WriteLine($"Выиграл Усердный игрок, число {guessValue}, ход {hod}");
+                    return;
+                }
+                if (simple1.array[massiv] == guessValue)
+                {
+                    Console.WriteLine($"Выиграл Простой игрок, число {guessValue}, ход {hod}");
+                    return;
+                }
+                if (smart1.array[massiv] == guessValue)
+                {
+                    Console.WriteLine($"Выиграл Умный игрок, число {guessValue}, ход {hod}");
+                    return;
+                }
+                if (c_Diligent1.array[massiv] == guessValue)
+                {
+                    Console.WriteLine($"Выиграл Усердный читер, число {guessValue}, ход {hod}");
+                    return;
+                }
+
+                massiv++;
+                hod++;
+            }
+        }
+    }
+}
